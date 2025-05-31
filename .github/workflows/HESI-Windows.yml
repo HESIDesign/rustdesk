@@ -8,20 +8,59 @@ on:
 
 jobs:
   generate-bridge:
-    uses: rustdesk/rustdesk/.github/workflows/flutter-build.yml@c626c2414d7a51b7e628555996d48983fa8d6607#jobs.generate-bridge
+    name: Generate Bridge
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl
+
+      - name: Download and setup bridge
+        run: |
+          # 替换为实际的下载和设置桥接文件的命令
+          curl -L https://github.com/rustdesk/rustdesk/releases/download/v1.4.0/bridge-setup.sh | bash
 
   build-RustDeskTempTopMostWindow:
-    uses: rustdesk/rustdesk/.github/workflows/flutter-build.yml@c626c2414d7a51b7e628555996d48983fa8d6607#jobs.build-RustDeskTempTopMostWindow
-    with:
-      upload-artifact: ${{ inputs.upload-artifact }}
-      target: windows-2022
-      configuration: Release
-      platform: x64
-      target_version: Windows10
+    name: Build RustDeskTempTopMostWindow
+    runs-on: windows-2022
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install dependencies
+        run: |
+          choco install -y llvm
+          choco install -y cmake
+
+      - name: Build project
+        run: |
+          cmake -B build
+          cmake --build build --config Release
 
   build-windows:
-    uses: rustdesk/rustdesk/.github/workflows/flutter-build.yml@c626c2414d7a51b7e628555996d48983fa8d6607#jobs.build-for-windows-flutter
+    name: Build Windows 64-bit
     needs: [generate-bridge, build-RustDeskTempTopMostWindow]
-    with:
-      upload-artifact: ${{ inputs.upload-artifact }}
-      upload-tag: ${{ inputs.upload-tag }}
+    runs-on: windows-2022
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install dependencies
+        run: |
+          choco install -y llvm
+          choco install -y cmake
+
+      - name: Build project
+        run: |
+          cmake -B build
+          cmake --build build --config Release
