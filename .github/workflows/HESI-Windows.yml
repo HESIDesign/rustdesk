@@ -1,0 +1,27 @@
+name: HESI Build Windows 64-bit RustDesk
+
+on:
+  workflow_dispatch:  # 允许手动触发工作流
+  push:
+    branches:
+      - master  # 分支名称设置为 master
+
+jobs:
+  generate-bridge:
+    uses: rustdesk/rustdesk/.github/workflows/flutter-build.yml#jobs.generate-bridge
+
+  build-RustDeskTempTopMostWindow:
+    uses: rustdesk/rustdesk/.github/workflows/flutter-build.yml#jobs.build-RustDeskTempTopMostWindow
+    with:
+      upload-artifact: ${{ inputs.upload-artifact }}
+      target: windows-2022
+      configuration: Release
+      platform: x64
+      target_version: Windows10
+
+  build-windows:
+    uses: rustdesk/rustdesk/.github/workflows/flutter-build.yml#jobs.build-for-windows-flutter
+    needs: [generate-bridge, build-RustDeskTempTopMostWindow]
+    with:
+      upload-artifact: ${{ inputs.upload-artifact }}
+      upload-tag: ${{ inputs.upload-tag }}
