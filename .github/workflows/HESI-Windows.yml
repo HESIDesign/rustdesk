@@ -1,36 +1,29 @@
 name: HESI Build Windows 64-bit RustDesk
 
 on:
-  workflow_dispatch:  # 允许手动触发工作流
-  push:
-    branches:
-      - master  # 分支名称设置为 master
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version of the workflow to use'
+        required: true
+        default: 'c626c2414d7a51b7e628555996d48983fa8d6607'
 
 jobs:
   generate-bridge:
-    uses: rustdesk/rustdesk/.github/workflows/flutter-build.yml@c626c2414d7a51b7e628555996d48983fa8d6607
-    steps:
-      - name: Run generate-bridge job
-        run: echo "Running generate-bridge job"
+    uses: rustdesk/rustdesk/.github/workflows/flutter-build.yml@${{ inputs.version }}#jobs.generate-bridge
 
   build-RustDeskTempTopMostWindow:
-    uses: rustdesk/rustdesk/.github/workflows/flutter-build.yml@c626c2414d7a51b7e628555996d48983fa8d6607
+    uses: rustdesk/rustdesk/.github/workflows/flutter-build.yml@${{ inputs.version }}#jobs.build-RustDeskTempTopMostWindow
     with:
       upload-artifact: ${{ inputs.upload-artifact }}
       target: windows-2022
       configuration: Release
       platform: x64
       target_version: Windows10
-    steps:
-      - name: Run build-RustDeskTempTopMostWindow job
-        run: echo "Running build-RustDeskTempTopMostWindow job"
 
   build-windows:
-    uses: rustdesk/rustdesk/.github/workflows/flutter-build.yml@c626c2414d7a51b7e628555996d48983fa8d6607
+    uses: rustdesk/rustdesk/.github/workflows/flutter-build.yml@${{ inputs.version }}#jobs.build-for-windows-flutter
     needs: [generate-bridge, build-RustDeskTempTopMostWindow]
     with:
       upload-artifact: ${{ inputs.upload-artifact }}
       upload-tag: ${{ inputs.upload-tag }}
-    steps:
-      - name: Run build-windows job
-        run: echo "Running build-windows job"
