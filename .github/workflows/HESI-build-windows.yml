@@ -1,4 +1,4 @@
-name: HESI Build Windows Version
+name: HESI Build Windows x64 Version
 
 on:
   workflow_call:
@@ -282,7 +282,7 @@ jobs:
 
   publish_unsigned:
     needs:
-      #- build-for-macOS
+      - build-for-macOS
       - build-for-windows-flutter
     runs-on: ubuntu-latest
     if: ${{ inputs.upload-artifact }}
