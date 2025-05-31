@@ -1,4 +1,4 @@
-name: Build Windows Version
+name: HESI Build Windows Version
 
 on:
   workflow_dispatch:
