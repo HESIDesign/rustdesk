@@ -83,4 +83,9 @@ jobs:
 
       - name: Publish Release
         if: env.UPLOAD_ARTIFACT == 'true'
-        uses:
+        uses: softprops/action-gh-release@v1
+        with:
+          prerelease: true
+          tag_name: ${{ env.TAG_NAME }}
+          files: |
+            flutter/build/rustdesk-${{ env.VERSION }}-web-basic.tar.gz
