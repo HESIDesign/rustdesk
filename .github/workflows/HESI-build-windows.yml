@@ -50,7 +50,11 @@ jobs:
         run: |
           # Windows: build RustDesk
           python3 .\build.py --portable --hwcodec --flutter --vram --skip-portable-pack
-          mv ./flutter/build/windows/x64/runner/Release ./rustdesk
+          if (-Not (Test-Path -Path "./flutter/build/windows/x64/runner/Release")) {
+            Write-Error "Path './flutter/build/windows/x64/runner/Release' does not exist."
+            exit 1
+          }
+          Move-Item -Path ./flutter/build/windows/x64/runner/Release -Destination ./rustdesk -Force
 
       - name: Upload Artifacts
         if: env.UPLOAD_ARTIFACT == 'true'
