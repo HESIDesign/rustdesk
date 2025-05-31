@@ -8,10 +8,10 @@ on:
 
 jobs:
   generate-bridge:
-    uses: rustdesk/rustdesk/.github/workflows/flutter-build.yml#jobs.generate-bridge
+    uses: rustdesk/rustdesk/.github/workflows/flutter-build.yml@1.4.0#jobs.generate-bridge
 
   build-RustDeskTempTopMostWindow:
-    uses: rustdesk/rustdesk/.github/workflows/flutter-build.yml#jobs.build-RustDeskTempTopMostWindow
+    uses: rustdesk/rustdesk/.github/workflows/flutter-build.yml@1.4.0#jobs.build-RustDeskTempTopMostWindow
     with:
       upload-artifact: ${{ inputs.upload-artifact }}
       target: windows-2022
@@ -20,7 +20,7 @@ jobs:
       target_version: Windows10
 
   build-windows:
-    uses: rustdesk/rustdesk/.github/workflows/flutter-build.yml#jobs.build-for-windows-flutter
+    uses: rustdesk/rustdesk/.github/workflows/flutter-build.yml@1.4.0#jobs.build-for-windows-flutter
     needs: [generate-bridge, build-RustDeskTempTopMostWindow]
     with:
       upload-artifact: ${{ inputs.upload-artifact }}
