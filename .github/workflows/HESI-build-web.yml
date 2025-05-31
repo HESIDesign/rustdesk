@@ -1,0 +1,86 @@
+name: HESI Build Web Version
+
+on:
+  workflow_dispatch:
+    inputs:
+      upload-artifact:
+        description: 'Upload artifacts to GitHub'
+        required: true
+        default: 'true'
+        type: boolean
+      upload-tag:
+        description: 'Tag name for the release'
+        required: true
+        default: 'nightly'
+        type: string
+
+env:
+  FLUTTER_VERSION: "3.24.5"
+  VERSION: "1.4.0"
+  UPLOAD_ARTIFACT: "${{ inputs.upload-artifact }}"
+  TAG_NAME: "${{ inputs.upload-tag }}"
+
+jobs:
+  build-rustdesk-web:
+    name: Build Web Version
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y wget npm
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+
+      - name: Patch flutter
+        shell: bash
+        run: |
+          cd $(dirname $(dirname $(which flutter)))
+          [[ "3.24.5" == ${{env.FLUTTER_VERSION}} ]] && git apply ${{ github.workspace }}/.github/patches/flutter_3.24.4_dropdown_menu_enableFilter.diff
+
+      - name: Build Web
+        shell: bash
+        run: |
+          pushd flutter/web/js
+          npm install yarn -g
+          npm install typescript -g
+          npm install protoc -g
+          npm install ts-proto
+          npm install vite@2.8
+          yarn install && yarn build
+          popd
+
+          pushd flutter/web
+          wget https://github.com/rustdesk/doc.rustdesk.com/releases/download/console/web_deps.tar.gz
+          tar xzf web_deps.tar.gz
+          popd
+
+          pushd flutter
+          flutter build web --release
+          cd build
+          cp ../web/README.md web
+          echo -e "\n\nThis build is for preview and not full functionality." >> web/README.md
+          dir_name="rustdesk-${{ env.VERSION }}-web-basic"
+          mv web "${dir_name}" && tar czf "${dir_name}.tar.gz" "${dir_name}"
+          sha256sum "${dir_name}.tar.gz"
+          popd
+
+      - name: Upload Artifacts
+        if: env.UPLOAD_ARTIFACT == 'true'
+        uses: actions/upload-artifact@master
+        with:
+          name: rustdesk-${{ env.VERSION }}-web-basic.tar.gz
+          path: flutter/build/rustdesk-${{ env.VERSION }}-web-basic.tar.gz
+
+      - name: Publish Release
+        if: env.UPLOAD_ARTIFACT == 'true'
+        uses:
