@@ -23,8 +23,9 @@ jobs:
 
       - name: Download and setup bridge
         run: |
-          # 替换为实际的下载和设置桥接文件的命令
-          curl -L https://github.com/rustdesk/rustdesk/releases/download/v1.4.0/bridge-setup.sh | bash
+          curl -L https://github.com/rustdesk/rustdesk/releases/download/v1.4.0/bridge-setup.sh -o bridge-setup.sh
+          chmod +x bridge-setup.sh
+          ./bridge-setup.sh
 
   build-RustDeskTempTopMostWindow:
     name: Build RustDeskTempTopMostWindow
