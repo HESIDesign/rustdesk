@@ -1,0 +1,25 @@
+name: Update Submodule
+
+on:
+  schedule:
+    - cron: "0 0 * * *"  # 每天午夜运行一次
+  workflow_dispatch:  # 也可以手动触发
+
+jobs:
+  update-submodule:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive  # 克隆子模块
+
+      - name: Update submodule
+        run: |
+          git submodule update --remote --merge
+          git config --global user.name "HESIDesign"
+          git config --global user.email "arken@126.com"
+          git add .
+          git commit -m "Update submodule" || echo "No changes to commit"
+          git push
