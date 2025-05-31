@@ -1989,12 +1989,14 @@ impl LoginConfigHandler {
             Some(ImageQuality::Best)
         } else if q == "balanced" {
             if ignore_default {
-                None
+                //ken
+                Some(ImageQuality::Best) //None
             } else {
                 Some(ImageQuality::Balanced)
             }
         } else {
-            None
+            //ken
+            Some(ImageQuality::Best) //None
         }
     }
 
