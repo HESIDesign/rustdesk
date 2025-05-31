@@ -8,7 +8,7 @@ on:
 
 jobs:
   run-windows-build:
-    uses: rustdesk/rustdesk/.github/workflows/flutter-build.yml
+    uses: ./.github/workflows/flutter-build.yml
     secrets: inherit
     with:
       upload-artifact: true
