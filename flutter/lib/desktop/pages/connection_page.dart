@@ -41,7 +41,8 @@ class _OnlineStatusWidgetState extends State<OnlineStatusWidget> {
   double? get height => bind.isIncomingOnly() ? null : em * 3;
 
   void onUsePublicServerGuide() {
-    const url = "https://rustdesk.com/pricing";
+    // Ken 修改广告连接 ,原来的是https://rustdesk.com/pricing
+    const url = "https://www.dwg.cn/d/71-fdafa";
     canLaunchUrlString(url).then((can) {
       if (can) {
         launchUrlString(url);
@@ -78,7 +79,40 @@ class _OnlineStatusWidgetState extends State<OnlineStatusWidget> {
               .marginOnly(left: em),
         );
 
-    //去除广告
+    setupServerWidget() => Flexible(
+          child: Offstage(
+            offstage: !(!_svcStopped.value &&
+                stateGlobal.svcStatus.value == SvcStatus.ready &&
+                _svcIsUsingPublicServer.value),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(', ', style: TextStyle(fontSize: em)),
+                Flexible(
+                  child: InkWell(
+                    onTap: onUsePublicServerGuide,
+                    child: Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            // KEN 改为固定字符, 原来是：translate('setup_server_tip'),
+                            '使用RDP连接可获极致画质',
+                            style: TextStyle(
+                                decoration: TextDecoration.underline,
+                                fontSize: em),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        );
+
+      //去除上面的广告
+    /*
     Widget setupServerWidget() => Flexible(
       child: Offstage(
         offstage: !(!_svcStopped.value &&
@@ -90,6 +124,7 @@ class _OnlineStatusWidgetState extends State<OnlineStatusWidget> {
         ),
       ),
     );
+    */
 
     basicWidget() => Row(
           crossAxisAlignment: CrossAxisAlignment.center,
