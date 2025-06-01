@@ -66,8 +66,7 @@ class _OnlineStatusWidgetState extends State<OnlineStatusWidget> {
 
   @override
   Widget build(BuildContext context) {
-    //KEN 改为被控端模式   原来的是：final isIncomingOnly = bind.isIncomingOnly();
-    final isIncomingOnly = true; // 设置为 true，表示仅支持入站连接，被控端模式
+    final isIncomingOnly = bind.isIncomingOnly();
     startServiceWidget() => Offstage(
           offstage: !_svcStopped.value,
           child: InkWell(

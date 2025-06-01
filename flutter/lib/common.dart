@@ -103,6 +103,13 @@ enum DesktopType {
   portForward,
 }
 
+//KEN增加的代码  指定为自定义客户端
+bool _isCustomClient = true;
+bool get isCustomClient {
+  return _isCustomClient;
+}
+//结束
+
 class IconFont {
   static const _family1 = 'Tabbar';
   static const _family2 = 'PeerSearchbar';
@@ -2567,7 +2574,8 @@ bool isRunningInPortableMode() {
   if (!isWindows) {
     return false;
   }
-  return bool.hasEnvironment(kEnvPortableExecutable);
+  //return bool.hasEnvironment(kEnvPortableExecutable); //ken
+  return true; //ken Windows 便携版
 }
 
 /// Window status callback
