@@ -2574,8 +2574,8 @@ bool isRunningInPortableMode() {
   if (!isWindows) {
     return false;
   }
-  //return bool.hasEnvironment(kEnvPortableExecutable); //ken
-  return true; //ken Windows 便携版
+  return bool.hasEnvironment(kEnvPortableExecutable); //ken 非便携版
+  //return true; //ken Windows 便携版
 }
 
 /// Window status callback
